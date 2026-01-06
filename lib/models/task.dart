@@ -11,6 +11,24 @@ class AppTask {
     this.isCompleted = false,
   });
 
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'date': date.toIso8601String(),
+      'isCompleted': isCompleted,
+    };
+  }
+
+  factory AppTask.fromJson(Map<String, dynamic> json) {
+    return AppTask(
+      id: json['id'],
+      title: json['title'],
+      date: DateTime.parse(json['date']),
+      isCompleted: json['isCompleted'] ?? false,
+    );
+  }
+
   void toggle() {
     isCompleted = !isCompleted;
   }

@@ -39,4 +39,26 @@ class Habit {
       completedDays: completedDays ?? this.completedDays,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'iconEmoji': iconEmoji,
+      'completedDays':
+          completedDays.map((date) => date.toIso8601String()).toList(),
+    };
+  }
+
+  factory Habit.fromJson(Map<String, dynamic> json) {
+    return Habit(
+      id: json['id'],
+      title: json['title'],
+      iconEmoji: json['iconEmoji'],
+      completedDays: (json['completedDays'] as List<dynamic>?)
+              ?.map((dateStr) => DateTime.parse(dateStr))
+              .toSet() ??
+          {},
+    );
+  }
 }

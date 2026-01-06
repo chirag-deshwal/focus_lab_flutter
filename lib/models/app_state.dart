@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'habit.dart';
 import 'task.dart';
 
 class AppState extends ChangeNotifier {
-  final List<Habit> _habits = [
+  List<Habit> _habits = [
     Habit(id: '1', title: 'Wake up at 05:00', iconEmoji: '⏰'),
     Habit(id: '2', title: 'Gym', iconEmoji: '💪'),
     Habit(id: '3', title: 'Reading / Learning', iconEmoji: '📖'),
@@ -16,35 +18,57 @@ class AppState extends ChangeNotifier {
     Habit(id: '10', title: 'Cold Shower', iconEmoji: '🚿'),
   ];
 
-  final List<AppTask> _tasks = [
-    AppTask(
-        id: '1',
-        title: 'Film content for the new project',
-        date: DateTime.now()),
-    AppTask(id: '2', title: 'Water the plants', date: DateTime.now()),
-    AppTask(id: '3', title: 'Meet up with friends', date: DateTime.now()),
-    AppTask(
-        id: '4',
-        title: 'Check email',
-        date: DateTime.now().add(const Duration(days: 1))),
-    AppTask(
-        id: '5',
-        title: 'Reply to urgent matters',
-        date: DateTime.now().add(const Duration(days: 1))),
-    AppTask(
-        id: '6',
-        title: 'Post about the company',
-        date: DateTime.now().add(const Duration(days: 2))),
-  ];
+  List<AppTask> _tasks = [];
 
   DateTime _selectedDate = DateTime.now();
   bool _isDarkMode = false;
+
+  AppState() {
+    _loadFromPrefs();
+  }
+
+  Future<void> _loadFromPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    // Load Theme
+    _isDarkMode = prefs.getBool('isDarkMode') ?? false;
+
+    // Load Habits
+    final habitsJson = prefs.getStringList('habits');
+    if (habitsJson != null) {
+      _habits = habitsJson.map((e) => Habit.fromJson(jsonDecode(e))).toList();
+    }
+
+    // Load Tasks
+    final tasksJson = prefs.getStringList('tasks');
+    if (tasksJson != null) {
+      _tasks = tasksJson.map((e) => AppTask.fromJson(jsonDecode(e))).toList();
+    }
+
+    notifyListeners();
+  }
+
+  Future<void> _saveToPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    // Save Theme
+    await prefs.setBool('isDarkMode', _isDarkMode);
+
+    // Save Habits
+    final habitsJson = _habits.map((e) => jsonEncode(e.toJson())).toList();
+    await prefs.setStringList('habits', habitsJson);
+
+    // Save Tasks
+    final tasksJson = _tasks.map((e) => jsonEncode(e.toJson())).toList();
+    await prefs.setStringList('tasks', tasksJson);
+  }
 
   List<Habit> get habits => _habits;
   bool get isDarkMode => _isDarkMode;
 
   void toggleTheme() {
     _isDarkMode = !_isDarkMode;
+    _saveToPrefs();
     notifyListeners();
   }
 
@@ -67,12 +91,14 @@ class AppState extends ChangeNotifier {
   void toggleHabit(String habitId, DateTime date) {
     final habit = _habits.firstWhere((h) => h.id == habitId);
     habit.toggleCompletion(date);
+    _saveToPrefs();
     notifyListeners();
   }
 
   void toggleTask(String taskId) {
     final task = _tasks.firstWhere((t) => t.id == taskId);
     task.toggle();
+    _saveToPrefs();
     notifyListeners();
   }
 
@@ -81,11 +107,13 @@ class AppState extends ChangeNotifier {
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         title: title,
         date: date));
+    _saveToPrefs();
     notifyListeners();
   }
 
   void deleteTask(String taskId) {
     _tasks.removeWhere((t) => t.id == taskId);
+    _saveToPrefs();
     notifyListeners();
   }
 
@@ -93,6 +121,7 @@ class AppState extends ChangeNotifier {
     final index = _habits.indexWhere((h) => h.id == id);
     if (index != -1) {
       _habits[index] = _habits[index].copyWith(title: newTitle);
+      _saveToPrefs();
       notifyListeners();
     }
   }
