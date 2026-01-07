@@ -1,22 +1,28 @@
-# Flutter Based - Task organizer and help to track habits. (Simple & Unique)
 
-Experience on web  -- (https://chirag-deshwal.github.io/focus_lab_flutter)
+# Focus Matters. 🔥🧠
 
+## Flutter Based - Task organizer and help to track habits.
 
-### Polish Matters. 🔥
+* This repo is maintained by chirag choudhary.
+* Experience on web - https://chirag-deshwal.github.io/focus_lab_flutter
 
+## Screenshots
 
-## Getting Started with Flutter 
+![App Screenshot](https://raw.githubusercontent.com/chirag-deshwal/focus_lab_flutter/refs/heads/main/screenshot%2001.jpg)
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![App Screenshot](https://raw.githubusercontent.com/chirag-deshwal/focus_lab_flutter/refs/heads/main/screenshot%2002.jpg)
 
 
+## 🎯 Topic: Why task focus and habit trackers are essential today to combat distraction, rebuild attention, and maintain consistency in an internet-driven, always-connected world.
+
+🎯 Improves focus — helps stay on one task despite constant digital distractions
+
+⏱️ Builds consistency — turns good intentions into daily habits through tracking
+
+📉 Reduces overwhelm — breaks large goals into clear, manageable steps
+
+🔔 Counters distraction — creates structure in an always-online environment
+
+🧠 Boosts accountability — visual progress motivates follow-through
+
+🚀 Increases productivity — less decision fatigue, more meaningful work done
