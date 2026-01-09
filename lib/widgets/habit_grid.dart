@@ -4,13 +4,88 @@ import 'package:intl/intl.dart';
 import '../models/app_state.dart';
 import '../theme/colors.dart';
 
-class HabitGrid extends StatelessWidget {
+class HabitGrid extends StatefulWidget {
   const HabitGrid({super.key});
+
+  @override
+  State<HabitGrid> createState() => _HabitGridState();
+}
+
+class _HabitGridState extends State<HabitGrid> {
+  final ScrollController _scrollController = ScrollController();
+  double? _lastWidth;
+  DateTime? _lastSelectedDate;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToSelected());
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _scrollToSelected() {
+    if (!mounted) return;
+    final appState = Provider.of<AppState>(context, listen: false);
+
+    // Ensure we have a selection (Auto-select today if needed, though AppState handles init)
+    // If logic needed to "auto select current date if not selected", AppState already defaults to Now.
+    // Use the same generation logic as build
+    final today = DateTime.now();
+    final days = List.generate(
+        14, (index) => today.subtract(Duration(days: 13 - index)));
+
+    final selectedIndex = days.indexWhere((d) =>
+        d.year == appState.selectedDate.year &&
+        d.month == appState.selectedDate.month &&
+        d.day == appState.selectedDate.day);
+
+    if (selectedIndex != -1 && _scrollController.hasClients) {
+      final itemWidth = 50.0;
+      final offset = selectedIndex * itemWidth;
+
+      try {
+        final viewport = _scrollController.position.viewportDimension;
+        final maxScroll = _scrollController.position.maxScrollExtent;
+
+        // Center the selected item
+        // item center = offset + itemWidth/2
+        // viewport center = viewport/2
+        // scroll needed = item center - viewport center
+        double target = (offset + itemWidth / 2) - (viewport / 2);
+
+        // Clamp to valid range
+        target = target.clamp(0.0, maxScroll);
+
+        _scrollController.animateTo(
+          target,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      } catch (e) {
+        // Handle cases where layout might not be ready
+        print("Scroll error: $e");
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final appState = Provider.of<AppState>(context);
     final habits = appState.habits;
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    // Trigger scroll if width or selection changes
+    if (_lastWidth != screenWidth ||
+        _lastSelectedDate != appState.selectedDate) {
+      _lastWidth = screenWidth;
+      _lastSelectedDate = appState.selectedDate;
+      WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToSelected());
+    }
 
     // Generate last 30 days for example
     final today = DateTime.now();
@@ -89,6 +164,7 @@ class HabitGrid extends StatelessWidget {
               // Scrollable Days
               Expanded(
                 child: SingleChildScrollView(
+                  controller: _scrollController,
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: days.map((date) {

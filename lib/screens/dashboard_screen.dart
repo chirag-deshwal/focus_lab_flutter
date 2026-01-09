@@ -14,6 +14,8 @@ class DashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final appState = Provider.of<AppState>(context);
     final isDark = appState.isDarkMode;
+    final size = MediaQuery.of(context).size;
+    final isMobile = size.width < 900;
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -89,15 +91,29 @@ class DashboardScreen extends StatelessWidget {
             // Top Row
             SizedBox(
               height: 250,
-              child: Row(
-                children: const [
-                  Expanded(child: OverallProgress()),
-                  SizedBox(width: 20),
-                  Expanded(child: SuccessLineChart()),
-                  SizedBox(width: 20),
-                  Expanded(child: SuccessScoreCard()),
-                ],
-              ),
+              child: isMobile
+                  ? ListView(
+                      scrollDirection: Axis.horizontal,
+                      children: const [
+                        SizedBox(
+                            width: 300,
+                            child:
+                                SuccessScoreCard()), // Reordered as per image
+                        SizedBox(width: 20),
+                        SizedBox(width: 300, child: OverallProgress()),
+                        SizedBox(width: 20),
+                        SizedBox(width: 300, child: SuccessLineChart()),
+                      ],
+                    )
+                  : Row(
+                      children: const [
+                        Expanded(child: SuccessScoreCard()),
+                        SizedBox(width: 20),
+                        Expanded(child: OverallProgress()),
+                        SizedBox(width: 20),
+                        Expanded(child: SuccessLineChart()),
+                      ],
+                    ),
             ),
             const SizedBox(height: 30),
             // Bottom Split Section
@@ -106,49 +122,89 @@ class DashboardScreen extends StatelessWidget {
                 color: Colors.grey.withOpacity(0.1), // Light grey background
                 borderRadius: BorderRadius.circular(30),
               ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Left: Habit Tracker (White Card)
-                  Expanded(
-                    flex: 2,
-                    child: Container(
-                      margin: const EdgeInsets.all(20),
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.surface,
-                        borderRadius: BorderRadius.circular(24),
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Habit Tracker",
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color:
-                                  Theme.of(context).textTheme.titleLarge?.color,
+              child: isMobile
+                  ? Column(
+                      children: [
+                        // Tasks on top for mobile (as per image)
+                        const Padding(
+                          padding: EdgeInsets.all(20),
+                          child: DayTaskPanel(),
+                        ),
+                        // Habit Tracker below
+                        Container(
+                          margin: const EdgeInsets.all(20),
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.surface,
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Habit Tracker",
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .titleLarge
+                                      ?.color,
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              const HabitGrid(),
+                            ],
+                          ),
+                        ),
+                      ],
+                    )
+                  : Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Left: Habit Tracker (White Card)
+                        Expanded(
+                          flex: 2,
+                          child: Container(
+                            margin: const EdgeInsets.all(20),
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.surface,
+                              borderRadius: BorderRadius.circular(24),
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Habit Tracker",
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .titleLarge
+                                        ?.color,
+                                  ),
+                                ),
+                                const SizedBox(height: 20),
+                                const HabitGrid(),
+                              ],
                             ),
                           ),
-                          const SizedBox(height: 20),
-                          const HabitGrid(),
-                        ],
-                      ),
+                        ),
+                        // Right: Tasks (Transparent/Grey)
+                        const Expanded(
+                          flex: 1,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 20, horizontal: 10),
+                            child: DayTaskPanel(),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  // Right: Tasks (Transparent/Grey)
-                  Expanded(
-                    flex: 1,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 20, horizontal: 10),
-                      child: const DayTaskPanel(),
-                    ),
-                  ),
-                ],
-              ),
             ),
           ],
         ),
