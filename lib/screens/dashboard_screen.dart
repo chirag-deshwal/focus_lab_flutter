@@ -84,7 +84,7 @@ class DashboardScreen extends StatelessWidget {
         ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
+        padding: EdgeInsets.all(isMobile ? 12 : 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -125,15 +125,14 @@ class DashboardScreen extends StatelessWidget {
               child: isMobile
                   ? Column(
                       children: [
-                        // Tasks on top for mobile (as per image)
-                        const Padding(
-                          padding: EdgeInsets.all(20),
-                          child: DayTaskPanel(),
+                        Padding(
+                          padding: EdgeInsets.all(isMobile ? 10 : 20),
+                          child: const DayTaskPanel(),
                         ),
                         // Habit Tracker below
                         Container(
-                          margin: const EdgeInsets.all(20),
-                          padding: const EdgeInsets.all(20),
+                          margin: EdgeInsets.all(isMobile ? 10 : 20),
+                          padding: EdgeInsets.all(isMobile ? 12 : 20),
                           decoration: BoxDecoration(
                             color: Theme.of(context).colorScheme.surface,
                             borderRadius: BorderRadius.circular(24),
