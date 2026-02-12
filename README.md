@@ -6,6 +6,8 @@
 * This repo is maintained by chirag choudhary.
 * Experience on web - https://chirag-deshwal.github.io/focus_lab_flutter
 
+* [Made by ❤️ Anitigravity]
+
 ## Screenshots
 
 ![App Screenshot](https://raw.githubusercontent.com/chirag-deshwal/focus_lab_flutter/refs/heads/main/screenshot%2001.jpg)
