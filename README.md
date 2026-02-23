@@ -1,7 +1,7 @@
 
 # Focus Matters. 🔥🧠
 
-## Flutter Based - Task organizer and help to track habits.
+### Flutter Based - Task organizer and help to track habits.
 
 * This repo is maintained by chirag choudhary.
 * Experience on web - https://chirag-deshwal.github.io/focus_lab_flutter
