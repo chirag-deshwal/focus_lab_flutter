@@ -28,3 +28,10 @@
 🧠 Boosts accountability — visual progress motivates follow-through
 
 🚀 Increases productivity — less decision fatigue, more meaningful work done
+
+
+# License:
+This project is under Free source. This has warranty for guarantee of this product for updates and this is under the copyright free code you can use in your project with any term.
+
+
+Thanks for attention on this matter. 
